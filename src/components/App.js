@@ -2,7 +2,7 @@ import React from "react";
 import "./index.css";
 
 class App extends React.Component {
-  state = { memeText: "" };
+  state = { memeText: "", memeChunks: [] };
 
   componentDidMount() {
     const context = this.canvasA.getContext("2d");
@@ -11,11 +11,27 @@ class App extends React.Component {
       "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/mocking-spongebob-1556133078.jpg";
     image.onload = () => {
       context.drawImage(image, 0, 0, this.canvasA.height, this.canvasA.width);
-      context.font = "normal 30px Anton";
-      context.fillStyle = "#FFF";
-      context.strokeStyle = "#000";
     };
-    console.log(image);
+  }
+
+  componentDidUpdate() {
+    const context = this.canvasA.getContext("2d");
+    const image = new Image();
+    image.src =
+      "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/mocking-spongebob-1556133078.jpg";
+    context.drawImage(image, 0, 0, this.canvasA.height, this.canvasA.width);
+    context.font = "normal 30px Impact";
+    context.fillStyle = "#FFF";
+    context.strokeStyle = "#000";
+    context.textAlign = "center";
+    if (this.state.memeChunks) {
+      this.state.memeChunks.forEach((text, i) => {
+        let verticalLine = 50;
+        verticalLine = verticalLine + 50;
+        context.fillText(text, 200, i * 50 + 50);
+        context.strokeText(text, 200, i * 50 + 50);
+      });
+    }
   }
 
   tweak = c => {
@@ -27,16 +43,8 @@ class App extends React.Component {
       .split("")
       .map(this.tweak)
       .join("");
-    const context = this.canvasA.getContext("2d");
-    const image = new Image();
-    image.src =
-      "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/mocking-spongebob-1556133078.jpg";
-    context.drawImage(image, 0, 0, this.canvasA.height, this.canvasA.width);
-    context.font = "normal 30px Anton";
-    context.fillStyle = "#FFF";
-    context.strokeStyle = "#000";
-    this.setState({ memeText });
-    context.fillText(memeText, 120, 50);
+    const chunks = memeText.match(/.{1,26}(\s|$)/g);
+    this.setState({ memeChunks: chunks, memeText: memeText });
   };
 
   render() {
