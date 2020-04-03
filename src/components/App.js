@@ -51,6 +51,8 @@ class App extends React.Component {
     return (
       <div className="main">
         <input
+          autoFocus
+          type="text"
           onChange={this.onTextChange}
           value={this.state.memeText}
           className="meme-input"
